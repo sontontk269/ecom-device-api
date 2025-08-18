@@ -5,9 +5,10 @@ import { LoggerModule } from '@common/logger/logger.module'
 import { ConfigModule } from './config/config.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { RedisModule } from './redis/redis.module'
+import { AuthModule } from './modules/auth/auth.module'
 
 @Module({
-  imports: [ConfigModule, PrismaModule, RedisModule, CommonModule, LoggerModule],
+  imports: [ConfigModule, PrismaModule, RedisModule, CommonModule, LoggerModule, AuthModule],
   controllers: [AppController],
   providers: []
 })
