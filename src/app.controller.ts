@@ -6,7 +6,7 @@ export class AppController {
 
   @Get()
   testApi() {
-    // throw new GoneException()
-    return 'user'
+    throw new GoneException()
+    // return 'user'
   }
 }
