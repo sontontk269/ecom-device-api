@@ -1,4 +1,4 @@
-import { Module, Global, Inject } from '@nestjs/common'
+import { Module, Global } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import Redis from 'ioredis'
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston'
