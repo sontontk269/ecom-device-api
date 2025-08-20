@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "public"."User" ALTER COLUMN "role" SET DEFAULT 'CUSTOMER',
+ALTER COLUMN "status" SET DEFAULT 'INACTIVE';
