@@ -1,4 +1,10 @@
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common'
 import Redis from 'ioredis'
 import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -35,7 +41,7 @@ export class AuthService {
 
     const jti = crypto.randomUUID()
     const refreshToken = this.jwtService.sign(
-      { sub: user.id, jti },
+      { id: user.id, jti },
       {
         secret: this.configService.get<string>('jwt.secret'),
         expiresIn: this.configService.get<string>('jwt.refreshExpiresIn')
@@ -70,5 +76,33 @@ export class AuthService {
     })
 
     return createdUser
+  }
+
+  async refreshToken(userId: number, refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('jwt.secret')
+      })
+
+      const storedToken = await this.redis.get(`refresh:${userId}:${payload.jti}`)
+      if (!storedToken || storedToken !== refreshToken)
+        throw new UnauthorizedException('Invalid refresh token')
+
+      const newAccessToken = this.jwtService.sign(
+        {
+          id: userId,
+          email: payload.email,
+          role: payload.role
+        },
+        {
+          secret: this.configService.get<string>('jwt.secret'),
+          expiresIn: this.configService.get<string>('jwt.expiresIn')
+        }
+      )
+
+      return { accessToken: newAccessToken }
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token failed')
+    }
   }
 }

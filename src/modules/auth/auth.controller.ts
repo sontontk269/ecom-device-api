@@ -1,7 +1,7 @@
 import { AuthService } from '@modules/auth/auth.service'
 import { LoginDTO, RegisterDTO } from '@modules/auth/dto'
-import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common'
-import type { Response } from 'express'
+import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common'
+import type { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
 
 @Controller()
@@ -36,4 +36,15 @@ export class AuthController {
   async register(@Body() body: RegisterDTO) {
     return this.authService.register(body)
   }
+
+  @Post('refresh-token')
+  async refreshToken(@Req() req: Request) {
+    const refreshToken = req?.cookies['refreshToken']
+    const payload: any = this.authService['jwtService'].decode(refreshToken)
+    console.log(payload)
+    return this.authService.refreshToken(payload.id, refreshToken)
+  }
+
+  @Post('logout')
+  async logout() {}
 }
