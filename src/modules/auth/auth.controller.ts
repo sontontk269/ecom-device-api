@@ -1,13 +1,15 @@
 import { AuthService } from '@modules/auth/auth.service'
 import { LoginDTO, RegisterDTO } from '@modules/auth/dto'
-import { Body, Controller, Post, Res } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common'
 import type { Response } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
+  @HttpCode(StatusCodes.OK)
   async login(@Body() body: LoginDTO, @Res({ passthrough: true }) res: Response) {
     const user = await this.authService.validateUser(body.email, body.password)
     const tokens = await this.authService.login(user)
@@ -30,6 +32,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @HttpCode(StatusCodes.CREATED)
   async register(@Body() body: RegisterDTO) {
     return this.authService.register(body)
   }
