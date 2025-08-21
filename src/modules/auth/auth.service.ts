@@ -105,4 +105,13 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token failed')
     }
   }
+
+  async logout(userId: number, jti: string) {
+    await this.redis.del(`refresh:${userId}:${jti}`)
+  }
+
+  async revokeAll(userId: number) {
+    const keys = await this.redis.keys(`refresh:${userId}:*`)
+    if (keys.length) await this.redis.del(keys)
+  }
 }

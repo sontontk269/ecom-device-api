@@ -46,5 +46,18 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout() {}
+  @HttpCode(StatusCodes.OK)
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const refreshToken = req?.cookies['refreshToken']
+    if (refreshToken) {
+      const payload: any = this.authService['jwtService'].decode(refreshToken)
+      await this.authService.logout(payload.id, payload.jti)
+      await this.authService.revokeAll(payload.id)
+    }
+
+    res.clearCookie('refreshToken')
+    res.clearCookie('accessToken')
+
+    return { message: 'Logged out!' }
+  }
 }
