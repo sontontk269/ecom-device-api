@@ -4,8 +4,10 @@ import * as request from 'supertest'
 import { App } from 'supertest/types'
 import { AppModule } from './../src/app.module'
 
+const PORT = 3002
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>
+  let prismaService
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

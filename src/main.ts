@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core'
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import cookieParser from 'cookie-parser'
+import { ValidationPipe } from '@nestjs/common'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+
+  app.useGlobalPipes(new ValidationPipe({}))
+  app.use(cookieParser())
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER))
 
@@ -21,7 +26,8 @@ async function bootstrap() {
 
   // Cấu hình CORS
   app.enableCors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    credentials: true
   })
 
   await app.listen(process.env.PORT ?? 3000)
