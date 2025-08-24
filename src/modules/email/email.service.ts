@@ -3,14 +3,16 @@ import { join } from 'path'
 import { Injectable } from '@nestjs/common'
 import * as SibApiV3Sdk from '@getbrevo/brevo'
 import * as hbs from 'handlebars'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class EmailService {
   private brevo: SibApiV3Sdk.TransactionalEmailsApi
+  private senderEmail: string
 
-  constructor() {
-    const apiKey = process.env.BREVO_API_KEY
-    const sender = process.env.BREVO_SENDER
+  constructor(private configService: ConfigService) {
+    const apiKey = this.configService.get<string>('brevo.apiKey')
+    const sender = this.configService.get<string>('brevo.senderEmail')
 
     if (!apiKey || !sender) {
       throw new Error('Missing BREVO_API_KEY or BREVO_SENDER in environment variables')
@@ -54,7 +56,7 @@ export class EmailService {
     const email = new SibApiV3Sdk.SendSmtpEmail()
     email.subject = 'Activate your account'
     email.htmlContent = html
-    email.sender = { name: 'My App', email: process.env.BREVO_SENDER! }
+    email.sender = { name: 'My App', email: this.senderEmail }
     email.to = [{ email: to }]
 
     return this.brevo.sendTransacEmail(email)
@@ -66,7 +68,7 @@ export class EmailService {
     const email = new SibApiV3Sdk.SendSmtpEmail()
     email.subject = 'Welcome 🎉'
     email.htmlContent = html
-    email.sender = { name: 'My App', email: process.env.BREVO_SENDER! }
+    email.sender = { name: 'My App', email: this.senderEmail }
     email.to = [{ email: to }]
 
     return this.brevo.sendTransacEmail(email)
