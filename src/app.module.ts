@@ -7,6 +7,8 @@ import { ConfigModule } from './config/config.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { RedisModule } from './redis/redis.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { EmailModule } from './modules/email/email.module'
+import { ActivationModule } from './modules/activation/activation.module';
 
 @Module({
   imports: [
@@ -16,7 +18,9 @@ import { AuthModule } from './modules/auth/auth.module'
     CommonModule,
     LoggerModule,
     AuthModule,
-    UserModule
+    UserModule,
+    EmailModule,
+    ActivationModule
   ],
   controllers: [AppController],
   providers: []
