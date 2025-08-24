@@ -48,7 +48,7 @@ export class EmailService {
 
   async sendActivationEmail(to: string, token: string) {
     const html = this.compileTemplate('activation', {
-      activationLink: `${process.env.FRONTEND_URL}/activate?token=${token}`
+      activationLink: `${process.env.FRONTEND_URL}/activation?token=${token}`
     })
 
     const email = new SibApiV3Sdk.SendSmtpEmail()

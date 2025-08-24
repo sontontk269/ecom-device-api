@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import jwtConfig from 'src/config/jwt.config'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
+import { ActivationModule } from '@modules/activation/activation.module'
 import { JwtStrategy } from '@common/stragegies'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
@@ -16,7 +17,8 @@ import { AuthService } from './auth.service'
         secret: configService.get<string>('jwt.secret'),
         signOptions: { expiresIn: configService.get<string>('jwt.expiresIn') }
       })
-    })
+    }),
+    ActivationModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy]

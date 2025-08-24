@@ -11,6 +11,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config'
 import { RegisterDTO } from '@modules/auth/dto'
+import { ActivationService } from '@modules/activation/activation.service'
 
 @Injectable()
 export class AuthService {
@@ -18,12 +19,16 @@ export class AuthService {
     private prismaService: PrismaService,
     private jwtService: JwtService,
     @Inject('REDIS_CLIENT') private redis: Redis,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private activationService: ActivationService
   ) {}
 
   async validateUser(email: string, userPassword: string) {
     const user = await this.prismaService.user.findUnique({ where: { email } })
     if (!user) throw new NotFoundException('Email is not found')
+
+    if (user.status !== 'ACTIVE')
+      throw new UnauthorizedException('Please activate your account first.')
 
     const comparePassword = await bcrypt.compare(userPassword, user.password)
     if (!comparePassword) throw new ConflictException('Password is incorrect')
@@ -60,7 +65,7 @@ export class AuthService {
 
     const hashPassword = await bcrypt.hash(user.password, 10)
 
-    const createdUser = this.prismaService.user.create({
+    const createdUser = await this.prismaService.user.create({
       data: {
         email: user.email,
         password: hashPassword,
@@ -75,6 +80,8 @@ export class AuthService {
       }
     })
 
+    //send activation email
+    await this.activationService.createToken(createdUser.id, createdUser.email)
     return createdUser
   }
 

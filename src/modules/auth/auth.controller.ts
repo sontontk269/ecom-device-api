@@ -1,3 +1,4 @@
+import ApiResponse from '@common/utils/api-response'
 import { AuthService } from '@modules/auth/auth.service'
 import { LoginDTO, RegisterDTO } from '@modules/auth/dto'
 import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common'
@@ -9,7 +10,6 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  @HttpCode(StatusCodes.OK)
   async login(@Body() body: LoginDTO, @Res({ passthrough: true }) res: Response) {
     const user = await this.authService.validateUser(body.email, body.password)
     const tokens = await this.authService.login(user)
@@ -28,13 +28,17 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    return { user, accessToken: tokens.accessToken }
+    return ApiResponse.success({ user, accessToken: tokens.accessToken }, 'Login successful')
   }
 
   @Post('register')
-  @HttpCode(StatusCodes.CREATED)
   async register(@Body() body: RegisterDTO) {
-    return this.authService.register(body)
+    const user = await this.authService.register(body)
+
+    return ApiResponse.created(
+      user,
+      'Registration successful. Please check your email to activate your account.'
+    )
   }
 
   @Post('refresh-token')
