@@ -9,6 +9,7 @@ import { RedisModule } from './redis/redis.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { EmailModule } from './modules/email/email.module'
 import { ActivationModule } from './modules/activation/activation.module'
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ActivationModule } from './modules/activation/activation.module'
     AuthModule,
     UserModule,
     EmailModule,
-    ActivationModule
+    ActivationModule,
+    AdminModule
   ],
   controllers: [AppController],
   providers: []

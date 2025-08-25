@@ -12,6 +12,7 @@ import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config'
 import { RegisterDTO } from '@modules/auth/dto'
 import { ActivationService } from '@modules/activation/activation.service'
+import { UserEntity } from '@modules/auth/enitities'
 
 @Injectable()
 export class AuthService {
@@ -32,8 +33,8 @@ export class AuthService {
 
     const comparePassword = await bcrypt.compare(userPassword, user.password)
     if (!comparePassword) throw new ConflictException('Password is incorrect')
-    const { password, ...userWithoutPassword } = user
-    return userWithoutPassword
+
+    return UserEntity.pickUser(user)
   }
 
   async login(user: any) {
