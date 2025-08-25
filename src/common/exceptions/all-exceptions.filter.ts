@@ -23,6 +23,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     }
 
-    response.status(status).json(new ApiResponse(status, null, message, false))
+    response.status(status).json(new ApiResponse(status, message, false, null))
   }
 }
