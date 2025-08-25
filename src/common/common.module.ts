@@ -1,3 +1,4 @@
+import { AdminInitService } from '@common/admin-init.service'
 import { AllExceptionsFilter } from '@common/exceptions/all-exceptions.filter'
 import { LoggerInterceptor } from '@common/interceptors/logger.interceptor'
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor'
@@ -18,7 +19,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter
-    }
+    },
+    AdminInitService
   ]
 })
 export class CommonModule {}

@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { CommonModule } from '@common/common.module'
 import { AppController } from 'src/app.controller'
 import { LoggerModule } from '@common/logger/logger.module'
-import { AdminInitService } from '@common/admin-init.service'
 import { UserModule } from '@modules/user/user.module'
 import { ConfigModule } from './config/config.module'
 import { PrismaModule } from './prisma/prisma.module'
@@ -24,6 +23,6 @@ import { ActivationModule } from './modules/activation/activation.module'
     ActivationModule
   ],
   controllers: [AppController],
-  providers: [AdminInitService]
+  providers: []
 })
 export class AppModule {}
