@@ -12,7 +12,7 @@ import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config'
 import { RegisterDTO } from '@modules/auth/dto'
 import { ActivationService } from '@modules/activation/activation.service'
-import { UserEntity } from '@modules/auth/enitities'
+import { UserEntity } from '@modules/auth/entities'
 
 @Injectable()
 export class AuthService {
