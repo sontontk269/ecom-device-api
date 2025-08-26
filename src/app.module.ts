@@ -5,6 +5,7 @@ import { LoggerModule } from '@common/logger/logger.module'
 import { UserModule } from '@modules/user/user.module'
 import { RouterModule } from '@nestjs/core'
 import { AdminUsersModule } from '@modules/admin/users/users.module'
+import { AdminCategoriesModule } from '@modules/admin/categories/categories.module'
 import { ConfigModule } from './config/config.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { RedisModule } from './redis/redis.module'
@@ -29,7 +30,10 @@ import { AdminModule } from './modules/admin/admin.module'
       {
         path: 'admin',
         module: AdminModule,
-        children: [{ path: 'users', module: AdminUsersModule }]
+        children: [
+          { path: 'users', module: AdminUsersModule },
+          { path: 'categories', module: AdminCategoriesModule }
+        ]
       }
     ])
   ],

@@ -3,22 +3,16 @@ import { Roles } from '@common/decorators'
 import { PaginationDTO } from '@common/dto'
 import { JwtAuthGuard } from '@common/guards'
 import { RolesGuard } from '@common/guards/roles.guard'
-import { AdminUserService } from '@modules/admin/users/users.service'
+import { AdminCategoriesService } from '@modules/admin/categories/categories.service'
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 
 @Controller()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
-export class AdminUserController {
-  constructor(private adminUserService: AdminUserService) {}
-
-  @Get('test')
-  async test() {
-    return 'test admin api 123'
-  }
-
+export class AdminCategoriesController {
+  constructor(private adminCategoriesService: AdminCategoriesService) {}
   @Get()
-  async getAllUsers(@Query() query: PaginationDTO) {
-    return this.adminUserService.getAllUsers(query)
+  async getAllCategories(@Query() query: PaginationDTO) {
+    return this.adminCategoriesService.getAllCategories(query)
   }
 }
