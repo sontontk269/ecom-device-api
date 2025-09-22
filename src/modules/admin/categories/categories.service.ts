@@ -1,6 +1,6 @@
 import { PaginationDTO } from '@common/dto'
 import { CategoryDTO, CreateCategoryDTO } from '@modules/admin/categories/dto'
-import { BadGatewayException, BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import Redis from 'ioredis'
 import { PrismaService } from 'src/prisma/prisma.service'
 

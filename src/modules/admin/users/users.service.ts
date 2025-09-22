@@ -1,5 +1,4 @@
 import { PaginationDTO } from '@common/dto'
-import { UserEntity } from '@modules/auth/entities'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 
@@ -15,15 +14,22 @@ export class AdminUserService {
       this.prismaService.user.findMany({
         skip,
         take,
-        orderBy: { [sortBy]: order }
+        orderBy: { [sortBy]: order },
+        select: {
+          id: true,
+          email: true,
+          phone: true,
+          role: true,
+          status: true,
+          avatar: true,
+          createdAt: true
+        }
       }),
       this.prismaService.user.count()
     ])
 
-    const allUsers = users.map(u => UserEntity.pickUser(u))
-
     return {
-      users: allUsers,
+      users,
       total: count,
       page,
       limit,
