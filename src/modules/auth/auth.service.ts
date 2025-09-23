@@ -32,8 +32,8 @@ export class AuthService {
 
     const comparePassword = await bcrypt.compare(userPassword, user.password)
     if (!comparePassword) throw new ConflictException('Password is incorrect')
-    const { password, ...userWithoutPassword } = user
-    return userWithoutPassword
+
+    return user
   }
 
   async login(user: any) {

@@ -9,7 +9,7 @@ export class AdminInitService implements OnModuleInit {
 
   async onModuleInit() {
     const email = process.env.ADMIN_EMAIL || 'admin@example.com'
-    const password = process.env.ADMIN_PASSWORD || 'admin'
+    const password = process.env.ADMIN_PASSWORD || 'admin123123'
 
     const admin = await this.prismaService.user.findUnique({ where: { email } })
 
@@ -21,7 +21,8 @@ export class AdminInitService implements OnModuleInit {
           email,
           fullName: '',
           password: hashPassword,
-          role: Role.ADMIN
+          role: Role.ADMIN,
+          status: 'ACTIVE'
         }
       })
       console.log(`Admin created: ${email}`)
