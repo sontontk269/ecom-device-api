@@ -1,4 +1,4 @@
-import { ChangePasswordDTO, UpdateUserDTO } from '@modules/user/dto'
+import { UpdateUserDTO } from '@modules/user/dto'
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import bcrypt from 'bcrypt'
 import { PrismaService } from 'src/prisma/prisma.service'

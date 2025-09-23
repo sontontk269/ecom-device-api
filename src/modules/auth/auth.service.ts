@@ -109,6 +109,7 @@ export class AuthService {
 
       return { accessToken: newAccessToken }
     } catch (error) {
+      console.log(error)
       throw new UnauthorizedException('Refresh token failed')
     }
   }
