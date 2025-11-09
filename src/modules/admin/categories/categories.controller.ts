@@ -4,7 +4,7 @@ import { PaginationDTO } from '@common/dto'
 import { JwtAuthGuard } from '@common/guards'
 import { RolesGuard } from '@common/guards/roles.guard'
 import { AdminCategoriesService } from '@modules/admin/categories/categories.service'
-import { CreateCategoryDTO } from '@modules/admin/categories/dto/createCategory.dto'
+import { CreateCategoryInputDTO } from '@modules/admin/categories/dto'
 import {
   Body,
   Controller,
@@ -29,7 +29,7 @@ export class AdminCategoriesController {
   }
 
   @Post()
-  async createCategory(@Body() body: CreateCategoryDTO) {
+  async createCategory(@Body() body: CreateCategoryInputDTO) {
     return this.adminCategoriesService.createCategory(body)
   }
 

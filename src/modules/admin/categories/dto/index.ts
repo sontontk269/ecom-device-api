@@ -1,2 +1,2 @@
-export * from './createCategory.dto'
-export * from './category.dto'
+export * from './input'
+export * from './output'

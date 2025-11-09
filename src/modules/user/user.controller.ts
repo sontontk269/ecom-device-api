@@ -1,6 +1,6 @@
 import { User } from '@common/decorators'
 import { JwtAuthGuard } from '@common/guards'
-import { ChangePasswordDTO, UpdateUserDTO } from '@modules/user/dto'
+import { ChangePasswordValidation, UpdateUserValidation } from '@modules/user/dto'
 import { UserService } from '@modules/user/user.service'
 import { Body, Controller, Get, HttpCode, Patch, UseGuards } from '@nestjs/common'
 import { StatusCodes } from 'http-status-codes'
@@ -18,13 +18,13 @@ export class UserController {
 
   @Patch('update-profile')
   @HttpCode(StatusCodes.OK)
-  async updateProfile(@User() user: any, @Body() body: UpdateUserDTO) {
+  async updateProfile(@User() user: any, @Body() body: UpdateUserValidation) {
     return this.userService.updateProfile(user.id, body)
   }
 
   @Patch('change-password')
   @HttpCode(StatusCodes.OK)
-  async changePassword(@User() user: any, @Body() body: ChangePasswordDTO) {
+  async changePassword(@User() user: any, @Body() body: ChangePasswordValidation) {
     return this.userService.changePassword(user.id, body.oldPassword, body.newPassword)
   }
 }

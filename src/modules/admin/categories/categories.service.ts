@@ -1,8 +1,10 @@
 import { PaginationDTO } from '@common/dto'
-import { CategoryDTO, CreateCategoryDTO } from '@modules/admin/categories/dto'
+import { CreateCategoryInputDTO } from '@modules/admin/categories/dto/input/index.js'
+import { CategoryDTO } from '@modules/admin/categories/dto/output/index.js'
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
 import Redis from 'ioredis'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { toCategoryDTO } from './mapper/category.mapper.js'
 
 @Injectable()
 export class AdminCategoriesService {
@@ -11,12 +13,24 @@ export class AdminCategoriesService {
     @Inject('REDIS_CLIENT') private redis: Redis
   ) {}
 
+  private toDto(category: any): CategoryDTO {
+    return toCategoryDTO(category)
+  }
+
   async getAllCategories({
     page = 1,
     limit = 10,
     sortBy = 'createdAt',
     order = 'desc'
   }: PaginationDTO) {
+    const versionKey = 'categories:list:version'
+    const version = (await this.redis.get(versionKey)) ?? '1'
+    const cacheKey = `categories:list:v${version}:p${page}:l${limit}:s${sortBy}:o${order}`
+
+    const cached = await this.redis.get(cacheKey)
+    if (cached) {
+      return JSON.parse(cached)
+    }
     const skip = (page - 1) * limit
     const take = limit
 
@@ -29,10 +43,20 @@ export class AdminCategoriesService {
       this.prismaService.category.count()
     ])
 
-    return { categories, total: count, page, limit, totalPages: Math.ceil(count / limit) }
+    const result = {
+      categories: categories.map(c => this.toDto(c)),
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit)
+    }
+
+    // cache for 5 minutes
+    await this.redis.setex(cacheKey, 300, JSON.stringify(result))
+    return result
   }
 
-  async createCategory(data: CreateCategoryDTO) {
+  async createCategory(data: CreateCategoryInputDTO) {
     return this.prismaService.$transaction(async tx => {
       //if exist parentId => check parent
       if (data.parentId) {
@@ -64,10 +88,9 @@ export class AdminCategoriesService {
             sortOrder
           }
         })
-
-        await this.redis.del('categories')
-
-        return category
+        // bump version to invalidate all cached list keys
+        await this.redis.incr('categories:list:version')
+        return this.toDto(category)
       } catch (error) {
         if (error.code === 'P2002') throw new BadRequestException('Category name already exists')
 
@@ -86,19 +109,10 @@ export class AdminCategoriesService {
 
     const { parent, children, ...rest } = category
 
-    return {
+    return toCategoryDTO({
       ...rest,
-      parentId: parent?.id || null,
-      parent: parent
-        ? {
-            id: parent.id,
-            name: parent.name
-          }
-        : null,
-      children: children.map(c => ({
-        id: c.id,
-        name: c.name
-      }))
-    }
+      parent,
+      children
+    })
   }
 }

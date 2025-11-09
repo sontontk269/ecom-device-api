@@ -1,2 +1,2 @@
-export * from './updateUser.dto'
-export * from './changePassword.dto'
+export * from './input'
+export * from './ouput'
