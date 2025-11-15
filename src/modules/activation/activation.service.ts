@@ -11,7 +11,6 @@ export class ActivationService {
 
   async createToken(userId: number, email: string) {
     const token = crypto.randomUUID()
-
     await this.prismaService.activationToken.create({
       data: {
         token,

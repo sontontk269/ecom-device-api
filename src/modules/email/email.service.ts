@@ -18,6 +18,8 @@ export class EmailService {
       throw new Error('Missing BREVO_API_KEY or BREVO_SENDER in environment variables')
     }
 
+    this.senderEmail = sender
+
     const client = new SibApiV3Sdk.TransactionalEmailsApi()
     client.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, apiKey)
     this.brevo = client
