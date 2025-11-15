@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
 import { IsString, IsOptional, IsInt, IsBoolean, Min } from 'class-validator'
 
-export class CreateCategoryDTO {
+export class CreateCategoryInputDTO {
   @IsString()
   name: string
 
