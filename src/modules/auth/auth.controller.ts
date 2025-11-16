@@ -45,7 +45,6 @@ export class AuthController {
   async refreshToken(@Req() req: Request) {
     const refreshToken = req?.cookies['refreshToken']
     const payload: any = this.authService['jwtService'].decode(refreshToken)
-    console.log(payload)
     return this.authService.refreshToken(payload.id, refreshToken)
   }
 

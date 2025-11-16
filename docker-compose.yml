@@ -15,7 +15,7 @@ services:
     image: redis:latest
     container_name: ecom-redis
     ports:
-      - 6379:6379
+      - 6579:6579
     networks:
       - nestjs-network
     environment:
